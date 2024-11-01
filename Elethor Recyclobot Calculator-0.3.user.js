@@ -6,8 +6,8 @@
 // @author       Eugene
 // @match        https://elethor.com/*
 // @grant        none
-// @updateURL    
-// @downloadURL
+// @updateURL    https://github.com/EugeneHiccy/Elethor-QoL/blob/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
+// @downloadURL  https://github.com/EugeneHiccy/Elethor-QoL/blob/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
 // ==/UserScript==
 
 (function() {
