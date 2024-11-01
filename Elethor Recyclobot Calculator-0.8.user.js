@@ -7,8 +7,8 @@
 // @match        https://elethor.com/*
 // @grant        none
 // @license      GPL-3.0-or-later
-// @downloadURL  https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
-// @updateURL    https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
+// @downloadURL  https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.8.user.js
+// @updateURL    https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.8.user.js
 // ==/UserScript==
 /*
  * This program is free software: you can redistribute it and/or modify
