@@ -6,6 +6,8 @@
 // @author       Eugene
 // @match        https://elethor.com/*
 // @grant        none
+// @updateURL    
+// @downloadURL
 // ==/UserScript==
 
 (function() {
