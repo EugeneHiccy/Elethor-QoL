@@ -6,10 +6,24 @@
 // @author       Eugene
 // @match        https://elethor.com/*
 // @grant        none
-// @updateURL    https://github.com/EugeneHiccy/Elethor-QoL/blob/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
-// @downloadURL  https://github.com/EugeneHiccy/Elethor-QoL/blob/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
+// @updateURL    https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
+// @downloadURL  https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
+// @license      GPL-3.0-or-later
 // ==/UserScript==
-
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 (function() {
     'use strict';
 
