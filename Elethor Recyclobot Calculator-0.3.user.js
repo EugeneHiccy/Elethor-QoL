@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Elethor Recyclobot Calculator
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.8
 // @description  Calculate platinum production and gold profit with a UI
 // @author       Eugene
 // @match        https://elethor.com/*
 // @grant        none
-// @updateURL    https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
-// @downloadURL  https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
 // @license      GPL-3.0-or-later
+// @downloadURL  https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
+// @updateURL    https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Recyclobot%20Calculator-0.3.user.js
 // ==/UserScript==
 /*
  * This program is free software: you can redistribute it and/or modify
@@ -114,7 +114,12 @@
 
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button id="calculateBtn" style="background-color: #18743c; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Calculate</button>
+            <button id="resetBtn" style="background-color: #2596be; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">🔄 Reset</button>
             <button id="closeBtn" style="background-color: #a02424; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">X Close</button>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button id="copyInputBtn" style="background-color: #ea951f; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">📋 Copy Input</button>
+            <button id="copyOutputBtn" style="background-color: #ea951f; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">📋 Copy Output</button>
         </div>
         <div id="results" style="margin-top: 20px;"></div>
     `;
@@ -125,6 +130,7 @@
         if (calculatorContainer.style.display === 'none') {
             calculatorContainer.style.display = 'block';
             positionCalculator(); // Ensure it is positioned correctly when opened
+            loadInputs(); // Load saved inputs when opening
         } else {
             calculatorContainer.style.display = 'none';
         }
@@ -135,64 +141,148 @@
         calculatorContainer.style.display = 'none';
     });
 
-    // Calculate function
-    calculatorContainer.querySelector('#calculateBtn').addEventListener('click', () => {
-        const bonusPlatinumLevel = parseInt(calculatorContainer.querySelector('#bonusPlatinumLevel').value);
-        const exchangeRateLevel = parseInt(calculatorContainer.querySelector('#exchangeRateLevel').value);
-        const curvedBladeGoldCost = parseFloat(calculatorContainer.querySelector('#curvedBladeGoldCost').value);
-        const goldPerPlatinum = parseFloat(calculatorContainer.querySelector('#goldPerPlatinum').value);
+    // Reset button functionality
+    calculatorContainer.querySelector('#resetBtn').addEventListener('click', () => {
+        document.querySelector('#bonusPlatinumLevel').value = '';
+        document.querySelector('#exchangeRateLevel').value = '';
+        document.querySelector('#curvedBladeGoldCost').value = '';
+        document.querySelector('#goldPerPlatinum').value = '';
+        clearInputs(); // Clear localStorage
+        document.getElementById('results').innerHTML = ''; // Clear results
+    });
 
-        const CURVED_BLADES_PER_RECYCLE = 200;
-        const BASE_PLATINUM_POINTS = 1080;
-        const BASE_PLATINUM_COST = 10000;
-        const MAX_COST_INCREASE_PLATINUM = 20;
-        const PLATINUM_GOLD_COST = 250000;
-        const BONUS_PLATINUM_INCREMENT = 0.002;
+    // Copy Output button functionality
+    calculatorContainer.querySelector('#copyOutputBtn').addEventListener('click', () => {
+        const resultsText = document.getElementById('results').innerText;
+        navigator.clipboard.writeText(resultsText)
+        .then(() => {
+            // You can log to console instead of showing an alert
+            console.log('Output copied to clipboard!');
+        })
+        .catch(err => console.error('Failed to copy: ', err));
+});
 
-        const exchangeRateMultiplier = 1 + (exchangeRateLevel * 0.01);
-        const bonusPlatinumMultiplier = 1 + (bonusPlatinumLevel * BONUS_PLATINUM_INCREMENT);
-        const platinumPointsPerRecycle = Math.floor(BASE_PLATINUM_POINTS * exchangeRateMultiplier);
-        let currentPlatinumCost = BASE_PLATINUM_COST;
-        let platinumCount = 0;
-        let totalGoldProfit = 0;
-        let totalGoldSpent = 0;
+// Copy Input button functionality
+calculatorContainer.querySelector('#copyInputBtn').addEventListener('click', () => {
+    const bonusPlatinumLevel = document.querySelector('#bonusPlatinumLevel').value;
+    const exchangeRateLevel = document.querySelector('#exchangeRateLevel').value;
+    const curvedBladeGoldCost = document.querySelector('#curvedBladeGoldCost').value;
+    const goldPerPlatinum = document.querySelector('#goldPerPlatinum').value;
 
-        while (true) {
-            const platinumPointsNeeded = currentPlatinumCost;
-            const requiredRecycles = Math.ceil(platinumPointsNeeded / platinumPointsPerRecycle);
-            const requiredCurvedBlades = requiredRecycles * CURVED_BLADES_PER_RECYCLE;
-            const curvedBladesGoldCostTotal = requiredCurvedBlades * curvedBladeGoldCost;
-            const totalGoldCost = PLATINUM_GOLD_COST + curvedBladesGoldCostTotal;
-            const totalPlatinum = 1 * bonusPlatinumMultiplier;
-            const goldGainedFromPlatinum = totalPlatinum * goldPerPlatinum * 1_000_000;
-            const profit = goldGainedFromPlatinum - totalGoldCost;
+    const inputText = `
+        Bonus Platinum Level: ${bonusPlatinumLevel}
+        Exchange Rate Level: ${exchangeRateLevel}
+        Gold cost per curved blade: ${curvedBladeGoldCost}
+        Gold value per platinum (in millions): ${goldPerPlatinum}
+    `;
 
-            if (profit <= 0) {
-                break;
-            }
+    navigator.clipboard.writeText(inputText.trim())
+        .then(() => {
+            // You can log to console instead of showing an alert
+            console.log('Input values copied to clipboard!');
+        })
+        .catch(err => console.error('Failed to copy: ', err));
+});
 
-            totalGoldProfit += profit;
-            totalGoldSpent += totalGoldCost;
-            platinumCount++;
+// Calculate button functionality
+calculatorContainer.querySelector('#calculateBtn').addEventListener('click', () => {
+    const bonusPlatinumLevel = parseFloat(document.querySelector('#bonusPlatinumLevel').value);
+    const exchangeRateLevel = parseFloat(document.querySelector('#exchangeRateLevel').value);
+    const curvedBladeGoldCost = parseFloat(document.querySelector('#curvedBladeGoldCost').value);
+    const goldPerPlatinum = parseFloat(document.querySelector('#goldPerPlatinum').value);
 
-            if (platinumCount < MAX_COST_INCREASE_PLATINUM) {
-                currentPlatinumCost += 1000;
-            } else {
-                currentPlatinumCost += 500;
-            }
+    // Validation: Check for positive values
+    if (
+        isNaN(bonusPlatinumLevel) || bonusPlatinumLevel < 0 ||
+        isNaN(exchangeRateLevel) || exchangeRateLevel < 0 ||
+        isNaN(curvedBladeGoldCost) || curvedBladeGoldCost < 0 ||
+        isNaN(goldPerPlatinum) || goldPerPlatinum < 0
+    ) {
+        alert('Please enter positive values for all fields.');
+        return; // Exit the function if validation fails
+    }
+
+    saveInputs(bonusPlatinumLevel, exchangeRateLevel, curvedBladeGoldCost, goldPerPlatinum);
+
+    const CURVED_BLADES_PER_RECYCLE = 200;
+    const BASE_PLATINUM_POINTS = 1080;
+    const BASE_PLATINUM_COST = 10000;
+    const MAX_COST_INCREASE_PLATINUM = 20;
+    const PLATINUM_GOLD_COST = 250000;
+    const BONUS_PLATINUM_INCREMENT = 0.002;
+
+    const exchangeRateMultiplier = 1 + (exchangeRateLevel * 0.01);
+    const bonusPlatinumMultiplier = 1 + (bonusPlatinumLevel * BONUS_PLATINUM_INCREMENT);
+    const platinumPointsPerRecycle = Math.floor(BASE_PLATINUM_POINTS * exchangeRateMultiplier);
+    let currentPlatinumCost = BASE_PLATINUM_COST;
+    let platinumCount = 0;
+    let totalGoldProfit = 0;
+    let totalGoldSpent = 0;
+    let totalCurvedBladesUsed = 0; // New variable to track total curved blades used
+
+    while (true) {
+        const platinumPointsNeeded = currentPlatinumCost;
+        const requiredRecycles = Math.ceil(platinumPointsNeeded / platinumPointsPerRecycle);
+        const requiredCurvedBlades = requiredRecycles * CURVED_BLADES_PER_RECYCLE;
+        totalCurvedBladesUsed += requiredCurvedBlades; // Update total curved blades used
+        const curvedBladesGoldCostTotal = requiredCurvedBlades * curvedBladeGoldCost;
+        const totalGoldCost = PLATINUM_GOLD_COST + curvedBladesGoldCostTotal;
+        const totalPlatinum = 1 * bonusPlatinumMultiplier;
+        const goldGainedFromPlatinum = totalPlatinum * goldPerPlatinum * 1_000_000;
+        const profit = goldGainedFromPlatinum - totalGoldCost;
+
+        if (profit <= 0) {
+            break;
         }
 
-        // Display results
-        document.getElementById('results').innerHTML = `
-            <p style="color: #dee5ed;">Platinum to produce: ${platinumCount}</p>
-            <p style="color: #dee5ed;">Total Gold Profit : ${formatToBillions(totalGoldProfit)}</p>
-        `;
-    });
+        totalGoldProfit += profit;
+        totalGoldSpent += totalGoldCost;
+        platinumCount++;
+
+        if (platinumCount < MAX_COST_INCREASE_PLATINUM) {
+            currentPlatinumCost += 1000;
+        } else {
+            currentPlatinumCost += 500;
+        }
+    }
+
+    // Display results
+    document.getElementById('results').innerHTML = `
+        <p style="color: #dee5ed;">Platinum to produce: ${platinumCount}</p>
+        <p style="color: #dee5ed;">Total Gold Profit: ${formatToBillions(totalGoldProfit)}</p>
+        <p style="color: #dee5ed;">Maximum Bonus Platinum: ${(platinumCount * bonusPlatinumMultiplier).toFixed(2)}</p>
+        <p style="color: #dee5ed;">Total Curved Blades Used: ${totalCurvedBladesUsed}</p> <!-- New output -->
+    `;
+});
 
     // Function to format value to billions
     function formatToBillions(value) {
         let billions = value / 1_000_000_000;
         return billions.toFixed(2) + " billion";
+    }
+
+    // Save inputs to localStorage
+    function saveInputs(bonusPlatinumLevel, exchangeRateLevel, curvedBladeGoldCost, goldPerPlatinum) {
+        localStorage.setItem('bonusPlatinumLevel', bonusPlatinumLevel);
+        localStorage.setItem('exchangeRateLevel', exchangeRateLevel);
+        localStorage.setItem('curvedBladeGoldCost', curvedBladeGoldCost);
+        localStorage.setItem('goldPerPlatinum', goldPerPlatinum);
+    }
+
+    // Load inputs from localStorage
+    function loadInputs() {
+        document.querySelector('#bonusPlatinumLevel').value = localStorage.getItem('bonusPlatinumLevel') || '';
+        document.querySelector('#exchangeRateLevel').value = localStorage.getItem('exchangeRateLevel') || '';
+        document.querySelector('#curvedBladeGoldCost').value = localStorage.getItem('curvedBladeGoldCost') || '';
+        document.querySelector('#goldPerPlatinum').value = localStorage.getItem('goldPerPlatinum') || '';
+    }
+
+    // Clear inputs from localStorage
+    function clearInputs() {
+        localStorage.removeItem('bonusPlatinumLevel');
+        localStorage.removeItem('exchangeRateLevel');
+        localStorage.removeItem('curvedBladeGoldCost');
+        localStorage.removeItem('goldPerPlatinum');
     }
 
     // URL check function to show button and calculator only on the correct page
