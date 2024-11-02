@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Elethor Color Changer
+// @name         Elethor Chameleon
 // @namespace    http://tampermonkey.net/
 // @version      1.0
 // @author       Eugene
@@ -7,8 +7,8 @@
 // @match        *://elethor.com/*
 // @grant        GM_addStyle
 // @license      GPL-3.0-or-later
-// @downloadURL  https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Color%20Changer-1.0.user.js
-// @updateURL    https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Color%20Changer-1.0.user.js
+// @downloadURL  https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Chameleon-1.0.user.js
+// @updateURL    https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Chameleon-1.0.user.js
 // ==/UserScript==
 /*
  * This program is free software: you can redistribute it and/or modify
