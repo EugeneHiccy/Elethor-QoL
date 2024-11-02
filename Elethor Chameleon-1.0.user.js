@@ -85,8 +85,8 @@
                 setColors();
                 addOpenButton();
                 positionUI();
-                // Start reapplying colors every 2 seconds
-                setInterval(setColors, 10000); // Reapply colors every 2 seconds
+                // Start reapplying colors every 10 seconds
+                setInterval(setColors, 10000); // Reapply colors every 10 seconds
             }
         }, 500);
     }
