@@ -8,7 +8,7 @@
 // @grant        GM_addStyle
 // @license      GPL-3.0-or-later
 // @downloadURL  https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Chameleon-1.0.user.js
-// @updateURL    https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Chameleon-1.0.user.js
+// @updateURL    https://raw.github.com/EugeneHiccy/Elethor-QoL/main/Elethor%20Chameleon-1.0.meta.js
 // ==/UserScript==
 /*
  * This program is free software: you can redistribute it and/or modify
