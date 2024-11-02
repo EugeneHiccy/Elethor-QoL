@@ -73,39 +73,24 @@
         });
     }
 
-// Function to wait for elements to load
-function waitForElements() {
-    const observer = new MutationObserver(() => {
-        const appElement = document.querySelector('#app[data-v-app]');
-        const actionBarElement = document.querySelector('#currentAction.shadow.shadow-slate-800');
-        const topBarElement = document.querySelector('nav.navbar.is-fixed-top.is-primary.shadow-sm.shadow-slate-800\\/50');
+    // Function to wait for elements to load
+    function waitForElements() {
+        const interval = setInterval(() => {
+            const appElement = document.querySelector('#app[data-v-app]');
+            const actionBarElement = document.querySelector('#currentAction.shadow.shadow-slate-800');
+            const topBarElement = document.querySelector('nav.navbar.is-fixed-top.is-primary.shadow-sm.shadow-slate-800\\/50');
 
-        if (appElement && actionBarElement && topBarElement) {
-            observer.disconnect(); // Stop observing when elements are found
-            setColors();
-            addOpenButton();
-            positionUI();
-            
-            // Add a MutationObserver for changes to these elements
-            const config = { attributes: true, childList: true, subtree: true };
-            observer.observe(appElement, config);
-            observer.observe(actionBarElement, config);
-            observer.observe(topBarElement, config);
+            if (appElement && actionBarElement && topBarElement) {
+                clearInterval(interval);
+                setColors();
+                addOpenButton();
+                positionUI();
+                // Start reapplying colors every 2 seconds
+                setInterval(setColors, 10000); // Reapply colors every 2 seconds
+            }
+        }, 500);
+    }
 
-            // Observe changes in the color inputs as well
-            backgroundColorInput.addEventListener('input', setColors);
-            actionBarColorInput.addEventListener('input', setColors);
-            topBarColorInput.addEventListener('input', setColors);
-            textColorInput.addEventListener('input', setColors);
-        }
-    });
-
-    // Start observing the document body for added elements
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-}
 // Function to add the Open button next to the specified link
 function addOpenButton() {
     const navbarItem = document.querySelector('a[href="/corporation"].navbar-item.is-skewed');
