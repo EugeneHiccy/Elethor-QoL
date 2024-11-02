@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Elethor Chameleon
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.01
 // @author       Eugene
 // @description  Change colors on Elethor.com
 // @match        *://elethor.com/*
